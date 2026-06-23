@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Specx — Início{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Left: Workspaces -->
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0"><i class="bi bi-folder2-open me-2"></i>Workspaces</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newWorkspaceModal">
+                <i class="bi bi-plus-lg me-1"></i>Novo Workspace
+            </button>
+        </div>
+
+        {% if workspaces %}
+        <div class="row g-3">
+            {% for ws in workspaces %}
+            <div class="col-md-6 col-xl-4">
+                <div class="card workspace-card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-folder-fill text-primary me-2"></i>{{ ws }}
+                        </h5>
+                        <p class="card-text text-muted small">Workspace SDD</p>
+                        <div class="d-flex gap-2 mt-3">
+                            <a href="/workspace/{{ ws }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-arrow-right me-1"></i>Abrir
+                            </a>
+                            <form action="/workspace/{{ ws }}/delete" method="POST" class="d-inline"
+                                  onsubmit="return confirm('Excluir workspace {{ ws }}?')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="text-muted mt-3">Nenhum workspace encontrado. Crie um para começar!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Right: Models -->
+    <div class="col-lg-4">
+        <h4 class="mb-3"><i class="bi bi-cpu me-2"></i>Modelos Ollama</h4>
+        <div class="card">
+            <div class="card-body">
+                {% if models and models[0].name != "error" %}
+                <ul class="list-group list-group-flush">
+                    {% for model in models %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-braces me-2"></i>{{ model.name }}</span>
+                        <span class="badge bg-secondary">{{ "%.1f"|format(model.size / 1e9) }} GB</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="text-center py-3">
+                    <i class="bi bi-exclamation-triangle text-warning fs-1"></i>
+                    <p class="text-muted mt-2 small">
+                        Nenhum modelo encontrado.<br>
+                        Verifique se o Ollama está rodando.
+                    </p>
+                </div>
+                {% endif %}
+                <a href="/models" class="btn btn-outline-secondary btn-sm w-100 mt-3">
+                    <i class="bi bi-gear me-1"></i>Gerenciar Modelos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Workspace Modal -->
+<div class="modal fade" id="newWorkspaceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/workspace/new" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Novo Workspace</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="wsName" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="wsName" name="name"
+                               placeholder="meu-projeto" required pattern="[a-zA-Z0-9_-]+">
+                        <div class="form-text">Apenas letras, números, hífens e underscores.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="wsDesc" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="wsDesc" name="description" rows="2"
+                                  placeholder="Descrição opcional do projeto"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

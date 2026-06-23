@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}{{ workspace }} — Specx{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Workspaces</a></li>
+                <li class="breadcrumb-item active">{{ workspace }}</li>
+            </ol>
+        </nav>
+        <h2><i class="bi bi-folder-fill text-primary me-2"></i>{{ workspace }}</h2>
+        {% if meta and meta.get('description') %}
+        <p class="text-muted">{{ meta.description }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <a href="/workspace/{{ workspace }}/chat" class="card text-decoration-none quick-action">
+            <div class="card-body text-center">
+                <i class="bi bi-chat-dots-fill text-success display-6"></i>
+                <h6 class="mt-2 mb-0">AI Chat</h6>
+                <small class="text-muted">Converse com IA no contexto do projeto</small>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/workspace/{{ workspace }}/gears" class="card text-decoration-none quick-action">
+            <div class="card-body text-center">
+                <i class="bi bi-sliders text-warning display-6"></i>
+                <h6 class="mt-2 mb-0">GEARS</h6>
+                <small class="text-muted">Perfis de prompt engineering</small>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/workspace/{{ workspace }}/rules" class="card text-decoration-none quick-action">
+            <div class="card-body text-center">
+                <i class="bi bi-shield-check text-info display-6"></i>
+                <h6 class="mt-2 mb-0">Regras</h6>
+                <small class="text-muted">Diretrizes e restrições</small>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a href="/workspace/{{ workspace }}/memory" class="card text-decoration-none quick-action">
+            <div class="card-body text-center">
+                <i class="bi bi-database text-danger display-6"></i>
+                <h6 class="mt-2 mb-0">Memória</h6>
+                <small class="text-muted">Bancos de memória do projeto</small>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- SDD Documents -->
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Documentos SDD</h5>
+        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#newDocModal">
+            <i class="bi bi-plus me-1"></i>Novo
+        </button>
+    </div>
+    <div class="card-body">
+        {% if documents %}
+        <div class="list-group">
+            {% for doc in documents %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <a href="/workspace/{{ workspace }}/sdd/{{ doc }}" class="text-decoration-none d-flex align-items-center">
+                    {% if doc == 'SPEC.md' %}
+                    <i class="bi bi-bullseye text-primary me-2 fs-5"></i>
+                    {% elif doc == 'PLAN.md' %}
+                    <i class="bi bi-map text-success me-2 fs-5"></i>
+                    {% elif doc == 'TASK.md' %}
+                    <i class="bi bi-list-check text-warning me-2 fs-5"></i>
+                    {% else %}
+                    <i class="bi bi-file-earmark me-2 fs-5"></i>
+                    {% endif %}
+                    <span>{{ doc }}</span>
+                    {% if doc == 'SPEC.md' %}
+                    <span class="badge bg-primary ms-2">Especificação</span>
+                    {% elif doc == 'PLAN.md' %}
+                    <span class="badge bg-success ms-2">Plano</span>
+                    {% elif doc == 'TASK.md' %}
+                    <span class="badge bg-warning text-dark ms-2">Tarefas</span>
+                    {% endif %}
+                </a>
+                <form action="/workspace/{{ workspace }}/sdd/{{ doc }}/delete" method="POST" class="d-inline"
+                      onsubmit="return confirm('Excluir {{ doc }}?')">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted text-center mb-0">Nenhum documento SDD encontrado.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- GEARS Profiles Summary -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-sliders me-2"></i>Perfis GEARS</h5>
+    </div>
+    <div class="card-body">
+        {% if gear_profiles %}
+        <div class="d-flex flex-wrap gap-2">
+            {% for p in gear_profiles %}
+            <span class="badge bg-secondary fs-6"><i class="bi bi-circle-fill me-1" style="font-size:0.5rem"></i>{{ p }}</span>
+            {% endfor %}
+        </div>
+        <a href="/workspace/{{ workspace }}/gears" class="btn btn-sm btn-outline-warning mt-3">
+            <i class="bi bi-gear me-1"></i>Gerenciar Perfis
+        </a>
+        {% else %}
+        <p class="text-muted mb-2">Nenhum perfil GEARS configurado.</p>
+        <a href="/workspace/{{ workspace }}/gears" class="btn btn-sm btn-outline-warning">
+            <i class="bi bi-plus me-1"></i>Criar Perfil
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Memory Banks Summary -->
+<div class="row g-3">
+    {% for mtype, count in memory_entries.items() %}
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                {% if mtype == 'context' %}
+                <i class="bi bi-info-circle text-info fs-3"></i>
+                {% elif mtype == 'decisions' %}
+                <i class="bi bi-gavel text-warning fs-3"></i>
+                {% elif mtype == 'lessons' %}
+                <i class="bi bi-lightbulb text-success fs-3"></i>
+                {% elif mtype == 'conversations' %}
+                <i class="bi bi-chat-left-text text-primary fs-3"></i>
+                {% endif %}
+                <h6 class="mt-2 mb-0">{{ mtype|capitalize }}</h6>
+                <span class="badge bg-secondary">{{ count }} entradas</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- New Document Modal -->
+<div class="modal fade" id="newDocModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/workspace/{{ workspace }}/sdd/new" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Documento SDD</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="docFilename" class="form-label">Nome do arquivo</label>
+                        <input type="text" class="form-control" id="docFilename" name="filename"
+                               placeholder="ARQUITETURA.md" required>
+                        <div class="form-text">Será salvo como .md automaticamente.</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

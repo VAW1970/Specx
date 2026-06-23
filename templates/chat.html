@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block title %}AI Chat — {{ workspace }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Workspaces</a></li>
+        <li class="breadcrumb-item"><a href="/workspace/{{ workspace }}">{{ workspace }}</a></li>
+        <li class="breadcrumb-item active">AI Chat</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <!-- Chat Area -->
+    <div class="col-lg-9">
+        <div class="card chat-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-chat-dots-fill text-success me-2"></i>Chat com IA</h5>
+                <span class="badge bg-success" id="statusBadge">Pronto</span>
+            </div>
+            <div class="card-body chat-body" id="chatMessages">
+                <div class="chat-welcome text-center py-5">
+                    <i class="bi bi-robot display-1 text-muted"></i>
+                    <h4 class="mt-3">Olá! Sou o assistente Specx</h4>
+                    <p class="text-muted">Converse sobre o projeto <strong>{{ workspace }}</strong>. O contexto SDD, GEARS e regras serão aplicados automaticamente.</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <form id="chatForm" class="d-flex gap-2">
+                    <textarea class="form-control" id="chatInput" rows="2"
+                              placeholder="Digite sua mensagem..." style="resize:none;"></textarea>
+                    <button type="submit" class="btn btn-success" id="btnSend">
+                        <i class="bi bi-send"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar: Settings -->
+    <div class="col-lg-3">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-cpu me-2"></i>Modelo</h6>
+            </div>
+            <div class="card-body">
+                <select class="form-select form-select-sm" id="chatModel">
+                    {% for model in models %}
+                    {% if model.name != 'error' %}
+                    <option value="{{ model.name }}">{{ model.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-sliders me-2"></i>Perfil GEARS</h6>
+            </div>
+            <div class="card-body">
+                <select class="form-select form-select-sm" id="chatGears">
+                    <option value="">Nenhum (padrão)</option>
+                    {% for p in gear_profiles %}
+                    <option value="{{ p }}">{{ p }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-layers me-2"></i>Contexto</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="includeSdd" checked>
+                    <label class="form-check-label" for="includeSdd">Documentos SDD</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="includeRules" checked>
+                    <label class="form-check-label" for="includeRules">Regras</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="includeMemory" checked>
+                    <label class="form-check-label" for="includeMemory">Memória</label>
+                </div>
+            </div>
+        </div>
+
+        <a href="/workspace/{{ workspace }}" class="btn btn-outline-secondary btn-sm w-100">
+            <i class="bi bi-arrow-left me-1"></i>Voltar ao Workspace
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatForm = document.getElementById('chatForm');
+    const btnSend = document.getElementById('btnSend');
+    const statusBadge = document.getElementById('statusBadge');
+
+    // Remove welcome on first message
+    let welcomeRemoved = false;
+
+    function removeWelcome() {
+        if (!welcomeRemoved) {
+            const welcome = chatMessages.querySelector('.chat-welcome');
+            if (welcome) welcome.remove();
+            welcomeRemoved = true;
+        }
+    }
+
+    function appendMessage(role, content) {
+        const div = document.createElement('div');
+        div.className = `chat-msg chat-msg-${role} mb-3`;
+        div.innerHTML = `
+            <div class="d-flex align-items-start">
+                <div class="msg-avatar me-2">
+                    <i class="bi ${role === 'user' ? 'bi-person-circle' : 'bi-robot'} fs-4"></i>
+                </div>
+                <div class="msg-content flex-grow-1">
+                    <div class="msg-header small text-muted mb-1">${role === 'user' ? 'Você' : 'Specx AI'}</div>
+                    <div class="msg-text">${escapeHtml(content).replace(/\n/g, '<br>')}</div>
+                </div>
+            </div>`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return div;
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+
+        removeWelcome();
+        appendMessage('user', message);
+        chatInput.value = '';
+
+        const aiMsg = appendMessage('assistant', '');
+        const textEl = aiMsg.querySelector('.msg-text');
+        statusBadge.textContent = 'Gerando...';
+        statusBadge.className = 'badge bg-warning';
+        btnSend.disabled = true;
+
+        const model = document.getElementById('chatModel').value;
+        const gearsProfile = document.getElementById('chatGears').value;
+
+        try {
+            const response = await fetch(`/workspace/{{ workspace }}/chat/send`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    message: message,
+                    model: model,
+                    gears_profile: gearsProfile,
+                    include_sdd: document.getElementById('includeSdd').checked,
+                    include_rules: document.getElementById('includeRules').checked,
+                    include_memory: document.getElementById('includeMemory').checked
+                })
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullText = '';
+
+            while (true) {
+                const {done, value} = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            if (data.content) {
+                                fullText += data.content;
+                                textEl.innerHTML = escapeHtml(fullText).replace(/\n/g, '<br>');
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            }
+                            if (data.error) {
+                                textEl.innerHTML = `<span class="text-danger">Erro: ${escapeHtml(data.error)}</span>`;
+                            }
+                        } catch (e) {}
+                    }
+                }
+            }
+        } catch (e) {
+            textEl.innerHTML = `<span class="text-danger">Erro de conexão: ${escapeHtml(e.message)}</span>`;
+        }
+
+        statusBadge.textContent = 'Pronto';
+        statusBadge.className = 'badge bg-success';
+        btnSend.disabled = false;
+    }
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        sendMessage();
+    });
+
+    chatInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,614 @@
+{% extends "base.html" %}
+{% block title %}Ajuda — Specx{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sumário -->
+    <div class="col-lg-3">
+        <div class="card sticky-top" style="top: 80px;">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-list-ul me-2"></i>Sumário</h6>
+            </div>
+            <div class="card-body p-2">
+                <nav class="nav flex-column">
+                    <a class="nav-link py-1" href="#intro"><i class="bi bi-info-circle me-1"></i>O que é o Specx?</a>
+                    <a class="nav-link py-1" href="#start"><i class="bi bi-play-circle me-1"></i>Primeiros Passos</a>
+                    <a class="nav-link py-1" href="#dashboard"><i class="bi bi-house me-1"></i>Painel Inicial</a>
+                    <a class="nav-link py-1" href="#workspace"><i class="bi bi-folder me-1"></i>Workspaces</a>
+                    <a class="nav-link py-1" href="#sdd"><i class="bi bi-file-earmark-text me-1"></i>Documentos SDD</a>
+                    <a class="nav-link py-1" href="#gears"><i class="bi bi-sliders me-1"></i>Perfis GEARS</a>
+                    <a class="nav-link py-1" href="#chat"><i class="bi bi-chat-dots me-1"></i>Chat com IA</a>
+                    <a class="nav-link py-1" href="#rules"><i class="bi bi-shield-check me-1"></i>Regras</a>
+                    <a class="nav-link py-1" href="#memory"><i class="bi bi-database me-1"></i>Bancos de Memória</a>
+                    <a class="nav-link py-1" href="#models"><i class="bi bi-cpu me-1"></i>Gerenciar Modelos</a>
+                    <a class="nav-link py-1" href="#faq"><i class="bi bi-question-circle me-1"></i>FAQ</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="col-lg-9">
+
+        <!-- O que é o Specx -->
+        <section id="intro" class="mb-5">
+            <h2><i class="bi bi-info-circle text-primary me-2"></i>O que é o Specx?</h2>
+            <p class="lead">
+                O <strong>Specx</strong> é uma aplicação web para desenvolvimento assistido por IA seguindo a metodologia
+                <strong>SDD (Specification-Driven Development)</strong>, utilizando modelos de IA rodando localmente via <strong>Ollama</strong>.
+            </p>
+            <p>
+                Em vez de dar comandos vagos para a IA, o Specx oferece uma estrutura organizada onde você define:
+            </p>
+            <div class="row g-3 mt-2">
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-bullseye text-primary display-5"></i>
+                            <h6 class="mt-2">O QUE fazer</h6>
+                            <small class="text-muted">SPEC.md — Especificação do projeto</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-map text-success display-5"></i>
+                            <h6 class="mt-2">COMO fazer</h6>
+                            <small class="text-muted">PLAN.md — Plano de implementação</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-list-check text-warning display-5"></i>
+                            <h6 class="mt-2">O QUE fazer AGORA</h6>
+                            <small class="text-muted">TASK.md — Lista de tarefas</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Primeiros Passos -->
+        <section id="start" class="mb-5">
+            <h2><i class="bi bi-play-circle text-success me-2"></i>Primeiros Passos</h2>
+
+            <div class="alert alert-info">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                <strong>Pré-requisito:</strong> O Ollama deve estar instalado e rodando (<code>ollama serve</code>).
+            </div>
+
+            <h5>1. Iniciar o aplicativo</h5>
+            <p>No Windows, basta clicar duas vezes no arquivo <code>start.bat</code>. No terminal:</p>
+            <pre class="bg-dark text-light p-3 rounded"><code>cd specx
+pip install -r requirements.txt
+python app.py</code></pre>
+
+            <h5>2. Abrir no navegador</h5>
+            <p>Acesse <a href="http://localhost:5000">http://localhost:5000</a></p>
+
+            <h5>3. Criar seu primeiro workspace</h5>
+            <p>Clique em <strong>"Novo Workspace"</strong> na página inicial e dê um nome ao seu projeto.</p>
+
+            <!-- Visual Mockup: Dashboard -->
+            <div class="mockup-container mt-3">
+                <div class="mockup-header">
+                    <i class="bi bi-window me-1"></i> Simulação: Painel Inicial
+                </div>
+                <div class="mockup-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><i class="bi bi-folder2-open me-2"></i>Workspaces</h5>
+                        <button class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Novo Workspace</button>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <div class="mockup-card">
+                                <i class="bi bi-folder-fill text-primary me-1"></i>meu-projeto
+                                <div class="mt-1"><a class="btn btn-xs btn-outline-primary">Abrir</a></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mockup-card">
+                                <i class="bi bi-folder-fill text-primary me-1"></i>app-web
+                                <div class="mt-1"><a class="btn btn-xs btn-outline-primary">Abrir</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Dashboard / Workspace -->
+        <section id="dashboard" class="mb-5">
+            <h2><i class="bi bi-house text-info me-2"></i>Painel do Workspace</h2>
+            <p>Ao abrir um workspace, você verá os atalhos rápidos e a visão geral:</p>
+
+            <!-- Visual Mockup: Quick Actions -->
+            <div class="mockup-container mt-3">
+                <div class="mockup-header">
+                    <i class="bi bi-window me-1"></i> Simulação: Ações Rápidas
+                </div>
+                <div class="mockup-body">
+                    <div class="row g-2 text-center">
+                        <div class="col-md-3">
+                            <div class="mockup-action">
+                                <i class="bi bi-chat-dots-fill text-success fs-3"></i>
+                                <h6 class="mt-1 mb-0">AI Chat</h6>
+                                <small class="text-muted">Converse com IA</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mockup-action">
+                                <i class="bi bi-sliders text-warning fs-3"></i>
+                                <h6 class="mt-1 mb-0">GEARS</h6>
+                                <small class="text-muted">Perfis de prompt</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mockup-action">
+                                <i class="bi bi-shield-check text-info fs-3"></i>
+                                <h6 class="mt-1 mb-0">Regras</h6>
+                                <small class="text-muted">Diretrizes</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mockup-action">
+                                <i class="bi bi-database text-danger fs-3"></i>
+                                <h6 class="mt-1 mb-0">Memória</h6>
+                                <small class="text-muted">Bancos de dados</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Workspace -->
+        <section id="workspace" class="mb-5">
+            <h2><i class="bi bi-folder text-primary me-2"></i>Workspaces</h2>
+            <p>Um <strong>workspace</strong> é um container para todo o contexto do seu projeto. Ao criar um workspace, o Specx gera automaticamente:</p>
+            <ul>
+                <li><code>workspace.json</code> — Metadados do projeto</li>
+                <li><code>sdd/</code> — Documentos SPEC.md, PLAN.md, TASK.md</li>
+                <li><code>rules/</code> — Arquivo de regras padrão</li>
+                <li><code>memory/</code> — Diretórios para bancos de memória</li>
+                <li><code>gears/</code> — Perfis GEARS (criados pelo usuário)</li>
+            </ul>
+
+            <div class="alert alert-secondary">
+                <strong>Dica:</strong> Cada workspace é independente. Você pode ter vários projetos ao mesmo tempo.
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- SDD -->
+        <section id="sdd" class="mb-5">
+            <h2><i class="bi bi-file-earmark-text text-warning me-2"></i>Documentos SDD</h2>
+            <p>O coração do Specx são os três documentos SDD. Cada um tem um papel específico:</p>
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Arquivo</th>
+                            <th>Ícone</th>
+                            <th>O que define</th>
+                            <th>Exemplo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SPEC.md</strong></td>
+                            <td><i class="bi bi-bullseye text-primary"></i></td>
+                            <td>Requisitos, restrições, critérios de aceitação</td>
+                            <td>"O app deve ter login com e-mail e senha"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PLAN.md</strong></td>
+                            <td><i class="bi bi-map text-success"></i></td>
+                            <td>Arquitetura, modelo de dados, stack tecnológica</td>
+                            <td>"Usar Flask + PostgreSQL + Redis"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>TASK.md</strong></td>
+                            <td><i class="bi bi-list-check text-warning"></i></td>
+                            <td>Tarefas atômicas com prioridade e estimativa</td>
+                            <td>"[ ] Criar endpoint POST /api/login (2h)"</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Visual Mockup: Editor SDD -->
+            <div class="mockup-container mt-3">
+                <div class="mockup-header">
+                    <i class="bi bi-window me-1"></i> Simulação: Editor SDD
+                </div>
+                <div class="mockup-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="d-flex justify-content-between mb-2">
+                                <strong><i class="bi bi-bullseye text-primary me-1"></i>SPEC.md</strong>
+                                <span>
+                                    <button class="btn btn-xs btn-outline-info">Preview</button>
+                                    <button class="btn btn-xs btn-outline-success">Editar</button>
+                                </span>
+                            </div>
+                            <div class="mockup-editor">
+                                <span class="text-info"># Specification — Meu Projeto</span><br>
+                                <br>
+                                <span class="text-warning">## Requirements</span><br>
+                                <span class="text-muted">- [ ] Sistema de login seguro</span><br>
+                                <span class="text-muted">- [ ] Dashboard com métricas</span><br>
+                                <br>
+                                <span class="text-warning">## Constraints</span><br>
+                                <span class="text-muted">- Backend: Flask</span><br>
+                                <span class="text-muted">- DB: PostgreSQL</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <button class="btn btn-xs btn-outline-success"><i class="bi bi-stars me-1"></i>Gerar com IA</button>
+                                <button class="btn btn-xs btn-primary"><i class="bi bi-check-lg me-1"></i>Salvar</button>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mockup-sidebar">
+                                <strong class="small">Outros Documentos</strong>
+                                <div class="mockup-link"><i class="bi bi-bullseye me-1"></i>SPEC.md</div>
+                                <div class="mockup-link active"><i class="bi bi-map me-1"></i>PLAN.md</div>
+                                <div class="mockup-link"><i class="bi bi-list-check me-1"></i>TASK.md</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mt-4">Gerar com IA</h5>
+            <p>
+                Clique em <strong>"Gerar com IA"</strong> para usar o modelo Ollama e gerar ou refinar o conteúdo
+                do documento. O Specx automaticamente injeta o contexto dos outros documentos SDD, regras, GEARS e memória.
+            </p>
+
+            <div class="alert alert-success">
+                <strong>Fluxo recomendado:</strong><br>
+                1. Escreva o <strong>SPEC.md</strong> primeiro (o que o projeto deve fazer)<br>
+                2. Gere o <strong>PLAN.md</strong> com base no SPEC (como vai ser feito)<br>
+                3. Gere o <strong>TASK.md</strong> com base no SPEC + PLAN (o que fazer agora)<br>
+                4. Comece a trabalhar nas tarefas!
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- GEARS -->
+        <section id="gears" class="mb-5">
+            <h2><i class="bi bi-sliders text-warning me-2"></i>Perfis GEARS</h2>
+            <p>
+                <strong>GEARS</strong> é um framework de prompt engineering estruturado. Cada perfil define
+                <strong>5 dimensões</strong> que guiam como a IA deve se comportar:
+            </p>
+
+            <div class="row g-2 mt-2">
+                <div class="col">
+                    <div class="mockup-gears-card bg-primary">
+                        <strong>G</strong>oals
+                        <small>O que a IA deve realizar</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mockup-gears-card bg-success">
+                        <strong>E</strong>xamples
+                        <small>Exemplos concretos</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mockup-gears-card bg-warning text-dark">
+                        <strong>A</strong>ctions
+                        <small>Passos a seguir</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mockup-gears-card bg-danger">
+                        <strong>R</strong>ules
+                        <small>Restrições rígidas</small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="mockup-gears-card bg-info text-dark">
+                        <strong>S</strong>tyle
+                        <small>Tom e formatação</small>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mt-4">Perfis padrão</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr><th>Perfil</th><th>Quando usar</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>code_generator</code></td><td>Gerar código limpo e aderente à SPEC.md</td></tr>
+                        <tr><td><code>task_planner</code></td><td>Quebrar PLAN.md em tarefas atômicas</td></tr>
+                        <tr><td><code>code_reviewer</code></td><td>Revisar código contra os requisitos</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>Você pode carregar um perfil padrão ou criar o seu próprio na página GEARS.</p>
+        </section>
+
+        <hr>
+
+        <!-- Chat -->
+        <section id="chat" class="mb-5">
+            <h2><i class="bi bi-chat-dots-fill text-success me-2"></i>Chat com IA</h2>
+            <p>
+                O chat permite conversar diretamente com o modelo de IA. Todo o contexto do projeto
+                (SDD + GEARS + Regras + Memória) é injetado automaticamente no system prompt.
+            </p>
+
+            <!-- Visual Mockup: Chat -->
+            <div class="mockup-container mt-3">
+                <div class="mockup-header">
+                    <i class="bi bi-window me-1"></i> Simulação: Chat com IA
+                </div>
+                <div class="mockup-body" style="background: #0d1117;">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="mockup-chat-area">
+                                <div class="mockup-chat-msg user">
+                                    <small class="text-muted">Você</small><br>
+                                    <span>Crie o endpoint de login com validação de e-mail</span>
+                                </div>
+                                <div class="mockup-chat-msg ai">
+                                    <small class="text-muted">Specx AI</small><br>
+                                    <span>Claro! Com base na SPEC.md, vou criar o endpoint POST /api/login...</span>
+                                </div>
+                            </div>
+                            <div class="d-flex mt-2">
+                                <input type="text" class="form-control form-control-sm me-1" value="Digite sua mensagem..." disabled>
+                                <button class="btn btn-sm btn-success"><i class="bi bi-send"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="mockup-sidebar">
+                                <strong class="small">Configurações</strong>
+                                <div class="mockup-setting"><i class="bi bi-cpu me-1"></i>Modelo: llama3</div>
+                                <div class="mockup-setting"><i class="bi bi-sliders me-1"></i>GEARS: code_generator</div>
+                                <div class="mockup-setting"><i class="bi bi-check2 me-1"></i>Incluir SDD ✓</div>
+                                <div class="mockup-setting"><i class="bi bi-check2 me-1"></i>Incluir Regras ✓</div>
+                                <div class="mockup-setting"><i class="bi bi-check2 me-1"></i>Incluir Memória ✓</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mt-3">Configurações do chat</h5>
+            <ul>
+                <li><strong>Modelo:</strong> Escolha qual modelo Ollama usar para a conversa</li>
+                <li><strong>Perfil GEARS:</strong> Selecione um perfil para guiar o comportamento da IA</li>
+                <li><strong>Incluir SDD:</strong> Injeta SPEC/PLAN/TASK no contexto</li>
+                <li><strong>Incluir Regras:</strong> Injeta as regras do projeto</li>
+                <li><strong>Incluir Memória:</strong> Injeta as memórias do projeto</li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <!-- Regras -->
+        <section id="rules" class="mb-5">
+            <h2><i class="bi bi-shield-check text-info me-2"></i>Regras e Direcionamentos</h2>
+            <p>
+                Arquivos de regras são injetados no contexto da IA para garantir que ela siga as
+                diretrizes do seu projeto. O Specx já cria um <code>DEFAULT_RULES.md</code> com regras básicas.
+            </p>
+
+            <h5>Exemplo de regras</h5>
+            <pre class="bg-dark text-light p-3 rounded"><code># Regras do Projeto
+
+## Estilo de Código
+- Seguir PEP 8 para Python
+- Usar type hints
+- Funções com no máximo 30 linhas
+
+## Arquitetura
+- Separar responsabilidades
+- Usar padrão MVC
+- Nunca misturar lógica de negócio com apresentação
+
+## Interação com IA
+- Sempre referenciar SPEC.md antes de gerar código
+- Gerar uma tarefa por vez de TASK.md
+- Validar saída contra a arquitetura de PLAN.md</code></pre>
+
+            <div class="alert alert-info">
+                <strong>Dica:</strong> Você pode criar múltiplos arquivos de regras para diferentes contextos
+                (ex: <code>CODING_RULES.md</code>, <code>SECURITY_RULES.md</code>). Todos são injetados automaticamente.
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Memória -->
+        <section id="memory" class="mb-5">
+            <h2><i class="bi bi-database text-danger me-2"></i>Bancos de Memória</h2>
+            <p>
+                Os bancos de memória permitem armazenar informações persistentes do projeto que a IA
+                poderá consultar em todas as conversas.
+            </p>
+
+            <div class="row g-3 mt-2">
+                <div class="col-md-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-info-circle text-info fs-3"></i>
+                            <h6 class="mt-2">Contexto</h6>
+                            <small class="text-muted">Estado atual, fatos chave, configurações</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-gavel text-warning fs-3"></i>
+                            <h6 class="mt-2">Decisões</h6>
+                            <small class="text-muted">Decisões arquiteturais com justificativa</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-lightbulb text-success fs-3"></i>
+                            <h6 class="mt-2">Lições</h6>
+                            <small class="text-muted">O que funcionou e o que não funcionou</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center h-100">
+                        <div class="card-body">
+                            <i class="bi bi-chat-left-text text-primary fs-3"></i>
+                            <h6 class="mt-2">Conversas</h6>
+                            <small class="text-muted">Resumos de interações importantes</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mt-4">Como usar</h5>
+            <ol>
+                <li>Acesse a aba de <strong>Memória</strong> no workspace</li>
+                <li>Selecione o tipo de memória (contexto, decisões, lições, conversas)</li>
+                <li>Adicione uma entrada com título, conteúdo e tags</li>
+                <li>A IA terá acesso a essas informações em todas as próximas conversas</li>
+            </ol>
+
+            <div class="alert alert-warning">
+                <strong>Importante:</strong> A memória é limitada a ~20 entradas mais recentes por tipo
+                no contexto da IA. Use tags para organizar e busque entradas específicas quando necessário.
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Modelos -->
+        <section id="models" class="mb-5">
+            <h2><i class="bi bi-cpu text-secondary me-2"></i>Gerenciar Modelos</h2>
+            <p>
+                O Specx se conecta ao Ollama local para listar e usar modelos. Você pode baixar novos modelos
+                diretamente pela interface.
+            </p>
+
+            <h5>Modelos recomendados</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-dark">
+                        <tr><th>Modelo</th><th>Tamanho</th><th>Ideal para</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>llama3</code></td><td>~4.7 GB</td><td>Geral, bom equilíbrio qualidade/velocidade</td></tr>
+                        <tr><td><code>llama3:8b</code></td><td>~4.7 GB</td><td>Versão compacta do Llama 3</td></tr>
+                        <tr><td><code>codellama</code></td><td>~3.8 GB</td><td>Especializado em código</td></tr>
+                        <tr><td><code>mistral</code></td><td>~4.1 GB</td><td>Rápido e eficiente</td></tr>
+                        <tr><td><code>phi3</code></td><td>~2.2 GB</td><td>Leve, para máquinas com menos RAM</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="alert alert-secondary">
+                <strong>Como baixar:</strong> Vá em <strong>Modelos</strong> → digite o nome → clique em <strong>Baixar</strong>.
+                Ou use o terminal: <code>ollama pull llama3</code>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- FAQ -->
+        <section id="faq" class="mb-5">
+            <h2><i class="bi bi-question-circle text-secondary me-2"></i>Perguntas Frequentes</h2>
+
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            O Ollama precisa estar rodando separadamente?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <strong>Sim.</strong> O Specx é apenas a interface web. O Ollama precisa estar rodando
+                            em <code>http://localhost:11434</code>. Inicie com <code>ollama serve</code>.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Os dados ficam salvos onde?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Todos os dados ficam na pasta <code>workspaces/</code> dentro do diretório do projeto.
+                            Cada workspace contém seus documentos SDD, regras, memórias e perfis GEARS.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Posso usar a IA sem documentos SDD?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <strong>Sim.</strong> Você pode desmarcar as opções de contexto no chat.
+                            A IA funcionará como um chatbot genérico sem contexto do projeto.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            Como funciona a geração de documentos com IA?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Ao clicar em <strong>"Gerar com IA"</strong> no editor SDD, o Specx monta um prompt
+                            completo com todos os contextos (outros documentos, regras, GEARS, memória)
+                            e envia para o modelo Ollama. O conteúdo gerado aparece diretamente no editor.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            Posso exportar/importar workspaces?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Atualmente não há exportação automática. Como os dados ficam em arquivos simples
+                            (.md e .json), você pode copiar a pasta do workspace manualmente para backup ou
+                            transferência.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

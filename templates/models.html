@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Modelos — Specx{% endblock %}
+
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-cpu me-2"></i>Gerenciar Modelos Ollama</h2>
+
+<div class="row">
+    <!-- Available Models -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Modelos Instalados</h5>
+            </div>
+            <div class="card-body">
+                {% if models and models[0].name != "error" %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Modelo</th>
+                                <th>Tamanho</th>
+                                <th>Modificado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for model in models %}
+                            <tr>
+                                <td><i class="bi bi-braces text-primary me-2"></i>{{ model.name }}</td>
+                                <td>{{ "%.2f"|format(model.size / 1e9) }} GB</td>
+                                <td class="small text-muted">{{ model.modified_at[:19] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-exclamation-triangle text-warning display-4"></i>
+                    <p class="text-muted mt-2">Nenhum modelo encontrado. Verifique se o Ollama está rodando.</p>
+                    <code>ollama serve</code>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Pull New Model -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-download me-2"></i>Baixar Modelo</h5>
+            </div>
+            <div class="card-body">
+                <form action="/models/pull" method="POST">
+                    <div class="mb-3">
+                        <label for="modelName" class="form-label">Nome do Modelo</label>
+                        <input type="text" class="form-control" id="modelName" name="model_name"
+                               placeholder="llama3" required>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Modelos populares:</small>
+                        <div class="d-flex flex-wrap gap-1 mt-1">
+                            {% for m in ['llama3', 'llama3:8b', 'mistral', 'codellama', 'phi3', 'gemma', 'qwen2'] %}
+                            <span class="badge bg-secondary model-suggestion" style="cursor:pointer;" data-model="{{ m }}">{{ m }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-download me-1"></i>Baixar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.model-suggestion').forEach(el => {
+    el.addEventListener('click', function() {
+        document.getElementById('modelName').value = this.dataset.model;
+    });
+});
+</script>
+{% endblock %}

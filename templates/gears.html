@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}GEARS — {{ workspace }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Workspaces</a></li>
+        <li class="breadcrumb-item"><a href="/workspace/{{ workspace }}">{{ workspace }}</a></li>
+        <li class="breadcrumb-item active">GEARS</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <h2 class="mb-4"><i class="bi bi-sliders text-warning me-2"></i>Perfis GEARS</h2>
+        <p class="text-muted">
+            <strong>GEARS</strong> = <strong>G</strong>oals · <strong>E</strong>xamples · <strong>A</strong>ctions · <strong>R</strong>ules · <strong>S</strong>tyle<br>
+            Perfis estruturados de prompt engineering para guiar as interações com IA.
+        </p>
+
+        {% if profiles %}
+        {% for profile in profiles %}
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-circle-fill text-warning me-2" style="font-size:0.6rem;"></i>
+                    {{ profile.name }}
+                </h5>
+                <form action="/workspace/{{ workspace }}/gears/delete" method="POST" class="d-inline"
+                      onsubmit="return confirm('Excluir perfil {{ profile.name }}?')">
+                    <input type="hidden" name="profile_name" value="{{ profile.name }}">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    {% for section in sections %}
+                    <div class="col-12">
+                        <h6 class="text-capitalize fw-bold">
+                            {% if section == 'goals' %}<i class="bi bi-bullseye me-1"></i>{% endif %}
+                            {% if section == 'examples' %}<i class="bi bi-lightbulb me-1"></i>{% endif %}
+                            {% if section == 'actions' %}<i class="bi bi-list-task me-1"></i>{% endif %}
+                            {% if section == 'rules' %}<i class="bi bi-shield-check me-1"></i>{% endif %}
+                            {% if section == 'style' %}<i class="bi bi-palette me-1"></i>{% endif %}
+                            {{ section }}
+                        </h6>
+                        <p class="mb-0 small text-muted" style="white-space: pre-wrap;">{{ profile[section] if profile[section] else '(vazio)' }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-sliders display-1 text-muted"></i>
+            <p class="text-muted mt-3">Nenhum perfil GEARS criado.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar: Create / Load -->
+    <div class="col-lg-4">
+        <!-- Create New -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Criar Perfil</h6>
+            </div>
+            <div class="card-body">
+                <form action="/workspace/{{ workspace }}/gears/save" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Nome do Perfil</label>
+                        <input type="text" class="form-control form-control-sm" name="profile_name"
+                               placeholder="meu_perfil" required pattern="[a-zA-Z0-9_-]+">
+                    </div>
+                    {% for section in sections %}
+                    <div class="mb-3">
+                        <label class="form-label text-capitalize">{{ section }}</label>
+                        <textarea class="form-control form-control-sm" name="{{ section }}" rows="3"
+                                  placeholder="{{ default_profiles.values()|map(attribute=section)|first if default_profiles else '' }}"></textarea>
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-warning btn-sm w-100">
+                        <i class="bi bi-check-lg me-1"></i>Salvar Perfil
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Load Default -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-download me-2"></i>Carregar Padrão</h6>
+            </div>
+            <div class="card-body">
+                {% for dp_name, dp in default_profiles.items() %}
+                <form action="/workspace/{{ workspace }}/gears/load_default" method="POST" class="mb-2">
+                    <input type="hidden" name="default_name" value="{{ dp_name }}">
+                    <button type="submit" class="btn btn-outline-secondary btn-sm w-100 text-start">
+                        <i class="bi bi-circle-fill text-warning me-2" style="font-size:0.5rem;"></i>
+                        {{ dp_name|replace('_', ' ')|title }}
+                    </button>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

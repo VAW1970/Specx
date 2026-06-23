@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Memória — {{ workspace }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Workspaces</a></li>
+        <li class="breadcrumb-item"><a href="/workspace/{{ workspace }}">{{ workspace }}</a></li>
+        <li class="breadcrumb-item active">Memória</li>
+    </ol>
+</nav>
+
+<h2 class="mb-4"><i class="bi bi-database text-danger me-2"></i>Bancos de Memória</h2>
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-4">
+    {% for mtype in memory_types %}
+    <li class="nav-item">
+        <a class="nav-link {% if mtype == active_type %}active{% endif %}"
+           href="/workspace/{{ workspace }}/memory?type={{ mtype }}">
+            {% if mtype == 'context' %}<i class="bi bi-info-circle me-1"></i>
+            {% elif mtype == 'decisions' %}<i class="bi bi-gavel me-1"></i>
+            {% elif mtype == 'lessons' %}<i class="bi bi-lightbulb me-1"></i>
+            {% elif mtype == 'conversations' %}<i class="bi bi-chat-left-text me-1"></i>
+            {% endif %}
+            {{ mtype|capitalize }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Search -->
+        <form class="mb-3" method="GET" action="/workspace/{{ workspace }}/memory/search">
+            <input type="hidden" name="type" value="{{ active_type }}">
+            <div class="input-group">
+                <input type="text" class="form-control" name="q" placeholder="Buscar na memória..."
+                       value="{{ search_query if search_query else '' }}">
+                <button class="btn btn-outline-secondary" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- Entries -->
+        {% if entries %}
+        {% for entry in entries %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-1">
+                            {% if active_type == 'context' %}<i class="bi bi-info-circle text-info me-1"></i>
+                            {% elif active_type == 'decisions' %}<i class="bi bi-gavel text-warning me-1"></i>
+                            {% elif active_type == 'lessons' %}<i class="bi bi-lightbulb text-success me-1"></i>
+                            {% elif active_type == 'conversations' %}<i class="bi bi-chat-left-text text-primary me-1"></i>
+                            {% endif %}
+                            {{ entry.title }}
+                        </h6>
+                        <p class="mb-1 small" style="white-space: pre-wrap;">{{ entry.content[:500] }}{% if entry.content|length > 500 %}...{% endif %}</p>
+                        {% if entry.tags %}
+                        <div class="mt-1">
+                            {% for tag in entry.tags %}
+                            <span class="badge bg-secondary small">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted">{{ entry.created_at[:10] }}</small>
+                        <form action="/workspace/{{ workspace }}/memory/delete" method="POST" class="d-inline"
+                              onsubmit="return confirm('Excluir esta entrada?')">
+                            <input type="hidden" name="memory_type" value="{{ active_type }}">
+                            <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <p class="text-muted mt-3">Nenhuma entrada nesta categoria.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar: Add Entry -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Adicionar Entrada</h6>
+            </div>
+            <div class="card-body">
+                <form action="/workspace/{{ workspace }}/memory/add" method="POST">
+                    <input type="hidden" name="memory_type" value="{{ active_type }}">
+                    <div class="mb-3">
+                        <label class="form-label">Título</label>
+                        <input type="text" class="form-control form-control-sm" name="title"
+                               placeholder="Ex: Decisão de usar PostgreSQL" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Conteúdo</label>
+                        <textarea class="form-control form-control-sm" name="content" rows="5"
+                                  placeholder="Detalhes..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tags</label>
+                        <input type="text" class="form-control form-control-sm" name="tags"
+                               placeholder="arquitetura, banco, decisao">
+                        <div class="form-text">Separadas por vírgula.</div>
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-sm w-100">
+                        <i class="bi bi-plus me-1"></i>Adicionar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

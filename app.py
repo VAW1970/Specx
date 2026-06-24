@@ -493,6 +493,34 @@ def memory_search(name: str):
     )
 
 
+@app.route("/workspace/<name>/memory/entry", methods=["GET"])
+@require_valid_ws
+def memory_entry(name: str):
+    memory = MemoryBank(_ws_path(name))
+    mtype = request.args.get("type", "context")
+    entry_id = request.args.get("id")
+    entry = memory.get_entry(mtype, entry_id)
+    if not entry:
+        return jsonify({}), 404
+    return jsonify(entry)
+
+
+@app.route("/workspace/<name>/memory/edit", methods=["POST"])
+@require_valid_ws
+def memory_edit(name: str):
+    memory = MemoryBank(_ws_path(name))
+    data = request.get_json()
+    mtype = data.get("memory_type")
+    entry_id = data.get("entry_id")
+    title = data.get("title", "").strip()
+    content = data.get("content", "").strip()
+    tags = [t.strip() for t in (data.get("tags") or "").split(",") if t.strip()]
+    if not title or not content:
+        return jsonify({"error": "Título e conteúdo são obrigatórios."}), 400
+    res = memory.update_entry(mtype, entry_id, {"title": title, "content": content, "tags": tags})
+    return jsonify(res)
+
+
 # ── API: Generate SDD with AI ──────────────────────────────────────
 
 

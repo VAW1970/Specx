@@ -319,7 +319,7 @@ def api_gears_list(name: str):
     for p in profiles:
         prof = gears.get_profile(p)
         if prof:
-            profile_data.append({"name": prof.name, "description": prof.description})
+            profile_data.append({"name": prof.name})
     return jsonify({"profiles": profile_data})
 
 

@@ -137,13 +137,13 @@
                 {% if mtype == 'context' %}
                 <i class="bi bi-info-circle text-info fs-3"></i>
                 {% elif mtype == 'decisions' %}
-                <i class="bi bi-gavel text-warning fs-3"></i>
+                <i class="bi bi-balance text-warning fs-3"></i>
                 {% elif mtype == 'lessons' %}
                 <i class="bi bi-lightbulb text-success fs-3"></i>
                 {% elif mtype == 'conversations' %}
                 <i class="bi bi-chat-left-text text-primary fs-3"></i>
                 {% endif %}
-                <h6 class="mt-2 mb-0">{{ mtype|capitalize }}</h6>
+                <h6 class="mt-2 mb-0">{% if mtype == 'context' %}Contexto{% elif mtype == 'decisions' %}Decisões{% elif mtype == 'lessons' %}Lições{% elif mtype == 'conversations' %}Conversas{% else %}{{ mtype|capitalize }}{% endif %}</h6>
                 <span class="badge bg-secondary">{{ count }} entradas</span>
             </div>
         </div>

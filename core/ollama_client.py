@@ -9,7 +9,7 @@ class OllamaClient:
 
     def __init__(self, host: str = "http://localhost:11434"):
         self.host = host
-        self.client = Client(host=host, timeout=5.0)
+        self.client = Client(host=host, timeout=120.0)
         self._models_cache: list[dict] | None = None
         self._models_cache_ts: float = 0
         self._cache_ttl: float = 10.0  # seconds

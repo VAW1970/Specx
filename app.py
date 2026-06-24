@@ -310,6 +310,19 @@ def gears_page(name: str):
     )
 
 
+@app.route("/workspace/<name>/api/gears")
+@require_valid_ws
+def api_gears_list(name: str):
+    gears = GearsEngine(_ws_path(name))
+    profiles = gears.list_profiles()
+    profile_data = []
+    for p in profiles:
+        prof = gears.get_profile(p)
+        if prof:
+            profile_data.append({"name": prof.name, "description": prof.description})
+    return jsonify({"profiles": profile_data})
+
+
 @app.route("/workspace/<name>/gears/save", methods=["POST"])
 @require_valid_ws
 def gears_save(name: str):

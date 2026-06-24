@@ -171,6 +171,63 @@ document.addEventListener('DOMContentLoaded', function() {
         const sel = document.getElementById('aiModel');
         sel.innerHTML = models.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
     });
+    // Load GEARS profiles
+    fetch(`/workspace/${'{{ workspace }}'}/api/gears`).then(r => r.json()).then(data => {
+        const sel = document.getElementById('aiGearsProfile');
+        sel.innerHTML = '<option value="">Nenhum</option>' +
+            data.profiles.map(p => `<option value="${p.name}">${p.name}</option>`).join('');
+    });
+
+    // AI Generate handler
+    document.getElementById('btnRunAI').addEventListener('click', async function() {
+        const btn = this;
+        const loading = document.getElementById('aiLoading');
+        btn.disabled = true;
+        loading.classList.remove('d-none');
+        const model = document.getElementById('aiModel').value;
+        const profile = document.getElementById('aiGearsProfile').value;
+        const context = document.getElementById('aiContext').value;
+        const filename = '{{ filename }}';
+        const docType = filename.replace('.md','').toUpperCase(); // SPEC, PLAN, TASK
+        try {
+            const resp = await fetch(`/workspace/${'{{ workspace }}'}/api/generate`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    doc_type: docType,
+                    model: model,
+                    gears_profile: profile,
+                    context: context
+                })
+            });
+            const reader = resp.body.getReader();
+            const decoder = new TextDecoder();
+            let result = '';
+            while (true) {
+                const {done, value} = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value, {stream: true});
+                // SSE format: data: <json>\n\n
+                chunk.split('\n').forEach(line => {
+                    if (line.startsWith('data:')) {
+                        try {
+                            const parsed = JSON.parse(line.slice(5).trim());
+                            if (parsed.content) result += parsed.content;
+                        } catch(e) {}
+                    }
+                });
+            }
+            // Insert into editor
+            const textarea = document.getElementById('sddContent');
+            textarea.value = result || textarea.value;
+        } catch (err) {
+            console.error(err);
+            alert('Erro ao gerar: ' + err);
+        } finally {
+            btn.disabled = false;
+            loading.classList.add('d-none');
+        }
+    });
 });
 </script>
 {% endblock %}
